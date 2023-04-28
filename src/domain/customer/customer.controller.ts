@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Version,
+} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -7,28 +16,36 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Version('1')
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.create(createCustomerDto);
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
+    return await this.customerService.create(createCustomerDto);
   }
 
+  @Version('1')
   @Get()
-  findAll() {
-    return this.customerService.findAll();
+  async findAll() {
+    return await this.customerService.findAll();
   }
 
+  @Version('1')
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customerService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.customerService.findOne(+id);
   }
 
+  @Version('1')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customerService.update(+id, updateCustomerDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
+    return await this.customerService.update(+id, updateCustomerDto);
   }
 
+  @Version('1')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customerService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.customerService.remove(+id);
   }
 }
