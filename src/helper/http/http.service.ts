@@ -21,6 +21,7 @@ export class HttpService {
         });
     } catch (error) {
       console.log(error.message);
+      throw new BadRequestException(error.message);
     }
   }
 }
