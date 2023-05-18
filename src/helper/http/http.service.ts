@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
@@ -11,17 +16,17 @@ export class HttpService {
         method: params.method,
         url: params.url,
         data: params.data,
-        timeout: 5000
+        timeout: 5000,
       })
         .then((response) => {
           return response;
         })
         .catch((error) => {
-          throw new BadRequestException(error);
+          throw new BadRequestException(error)
         });
     } catch (error) {
       console.log(error.message);
-      throw new BadRequestException(error.message);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

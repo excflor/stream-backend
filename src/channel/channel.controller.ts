@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Version,
+  Query,
+} from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -12,14 +22,16 @@ export class ChannelController {
     return this.channelService.create(createChannelDto);
   }
 
-  @Get()
-  async findAll() {
-    return await this.channelService.findAll();
+  @Version('1')
+  @Get('live')
+  async findLiveTvList() {
+    return await this.channelService.findLiveTvList();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findOne(+id);
+  @Version('1')
+  @Get('live/:id')
+  async findM3U(@Param('id') id: string, @Query() query: any) {
+    return await this.channelService.findM3U(id, query);
   }
 
   @Patch(':id')
