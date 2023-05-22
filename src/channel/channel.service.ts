@@ -32,7 +32,7 @@ export class ChannelService {
       method: 'GET',
       url: `${this.configService.get<string>(
         'HBO_LIVEPLAYBACK_URL',
-      )}&channelId=${channelId}&sessionToken=${sessionToken}&channelPartnerID=Telkomsel_HBO&operatorId=SIN&lang=en`,
+      )}&channelId=${channelId}&sessionToken=${this.configService.get<string>('HBO_SESSION_TOKEN')}&channelPartnerID=Telkomsel_HBO&operatorId=SIN&lang=en`,
     };
 
     const getM3U: any = await this.httpRequest.Request(channelParams);
