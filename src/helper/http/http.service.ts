@@ -16,7 +16,7 @@ export class HttpService {
         method: params.method,
         url: params.url,
         data: params.data,
-        timeout: 5000,
+        timeout: 30000,
       })
         .then((response) => {
           return response;
