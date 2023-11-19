@@ -22,7 +22,7 @@ export class HttpService {
           return response;
         })
         .catch((error) => {
-          throw new BadRequestException(error)
+          throw new BadRequestException(error);
         });
     } catch (error) {
       console.log(error.message);

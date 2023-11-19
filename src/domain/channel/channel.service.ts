@@ -1,8 +1,8 @@
-import { HttpService } from './../helper/http/http.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { ConfigService } from '@nestjs/config/dist';
+import { HttpService } from 'src/helper/http/http.service';
 
 @Injectable()
 export class ChannelService {

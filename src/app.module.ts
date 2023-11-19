@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HttpModule } from './helper/http/http.module';
-import { ChannelModule } from './channel/channel.module';
 import { ConfigModule } from '@nestjs/config';
+import { ChannelModule } from './domain/channel/channel.module';
 
 @Module({
   imports: [
