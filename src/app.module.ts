@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CustomerModule } from './domain/customer/customer.module';
+import { HttpModule } from './helper/http/http.module';
+import { ChannelModule } from './channel/channel.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
+      envFilePath: '.env',
       isGlobal: true,
     }),
-    CustomerModule,
+    HttpModule,
+    ChannelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
