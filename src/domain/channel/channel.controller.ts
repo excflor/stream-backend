@@ -34,6 +34,12 @@ export class ChannelController {
     return await this.channelService.findM3U(id, query);
   }
 
+  @Version('1')
+  @Post('encode')
+  async encodeToken(@Body() token: string) {
+    return await this.channelService.encodeToken(token);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
     return this.channelService.update(+id, updateChannelDto);

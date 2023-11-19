@@ -3,12 +3,14 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { ConfigService } from '@nestjs/config/dist';
 import { HttpService } from 'src/helper/http/http.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ChannelService {
   constructor(
     private readonly httpRequest: HttpService,
     private configService: ConfigService,
+    private jwtService: JwtService,
   ) {}
 
   create(createChannelDto: CreateChannelDto) {
@@ -53,6 +55,28 @@ export class ChannelService {
     }
 
     return getM3UData.data;
+  }
+
+  async encodeToken(token: string) {
+    try {
+      const payload = {
+        userId: 'yirose3988_std@cabose.com',
+        sessionId:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjdXJyZW50U2Vzc2lvbklkIjoiYzZmM2I1ZDktM2MxZi00YThkLThlMjctOTZhMzI4MzMwNmQ0IiwiY3VycmVudERldmljZVR5cGUiOiJBIiwiY3VycmVudFBsYXRmb3JtSWQiOiI0MDI4YzY4NTc0NTM3ZmNkMDE3NGFmNjc1NmE5NDI4OCIsInRpbWV6b25lIjoiQXNpYS9KYWthcnRhIiwiYXV0aG9yaXR5IjoiUk9MRV9VU0VSIiwiZXhwIjoxNzAwNDU0ODg5LCJ1c2VySWQiOiI0MDI4NDhlNDhiYjQwNGE5MDE4YmRkZjlhNDhiMDExZCIsImRldmljZUlkIjoiMTIzNDU2Nzg5MCIsImlhdCI6MTcwMDM2ODQ4OSwidXNlcm5hbWUiOiJ5aXJvc2UzOTg4X3N0ZEBjYWJvc2UuY29tIn0.Q2SRRe2Q9vAOcn5oLEm3kssdFEJjV9M6WD0CpIIiz4Y',
+        merchant: 'giitd_transvision',
+      };
+      const options = {
+        // expiresIn: '24h',
+        noTimestamp: true,
+      };
+      const token = await this.jwtService.signAsync(payload, options);
+      const [encodedHeader, encodedPayload, encodedSignature] =
+        token.split('.');
+
+      return encodedPayload;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   update(id: number, updateChannelDto: UpdateChannelDto) {
