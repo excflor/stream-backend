@@ -32,7 +32,9 @@ export class ChannelService {
       method: 'GET',
       url: `${this.configService.get<string>(
         'HBO_LIVEPLAYBACK_URL',
-      )}&channelId=${channelId}&sessionToken=${this.configService.get<string>('HBO_SESSION_TOKEN')}&channelPartnerID=Telkomsel_HBO&operatorId=SIN&lang=en`,
+      )}&channelId=${channelId}&sessionToken=${this.configService.get<string>(
+        'HBO_SESSION_TOKEN',
+      )}&channelPartnerID=Telkomsel_HBO&operatorId=SIN&lang=en`,
     };
 
     const getM3U: any = await this.httpRequest.Request(channelParams);
@@ -42,7 +44,7 @@ export class ChannelService {
 
     const m3uParams = {
       method: 'GET',
-      url: getM3U.data.url
+      url: getM3U.data.url,
     };
 
     const getM3UData: any = await this.httpRequest.Request(m3uParams);
