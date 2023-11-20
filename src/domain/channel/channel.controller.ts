@@ -12,6 +12,7 @@ import {
 import { ChannelService } from './channel.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
+import { TokenDto } from './dto/token.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -34,12 +35,6 @@ export class ChannelController {
     return await this.channelService.findM3U(id, query);
   }
 
-  @Version('1')
-  @Post('encode')
-  async encodeToken(@Body() token: string) {
-    return await this.channelService.encodeToken(token);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
     return this.channelService.update(+id, updateChannelDto);
@@ -48,5 +43,24 @@ export class ChannelController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.channelService.remove(+id);
+  }
+
+  // Token
+  @Version('1')
+  @Get('login')
+  async loginCubmu() {
+    return await this.channelService.loginCubmu();
+  }
+
+  @Version('1')
+  @Get('token')
+  async getToken() {
+    return await this.channelService.getToken();
+  }
+
+  @Version('1')
+  @Post('encode')
+  async encodeToken(@Body() payload: TokenDto) {
+    return await this.channelService.encodeToken(payload);
   }
 }

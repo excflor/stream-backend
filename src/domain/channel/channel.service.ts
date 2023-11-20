@@ -4,6 +4,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { ConfigService } from '@nestjs/config/dist';
 import { HttpService } from 'src/helper/http/http.service';
 import { JwtService } from '@nestjs/jwt';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class ChannelService {
@@ -57,16 +58,66 @@ export class ChannelService {
     return getM3UData.data;
   }
 
-  async encodeToken(token: string) {
+  async loginCubmu() {
+    try {
+      const loginPayload = [
+        {
+          url: '/v2/auth/login',
+        },
+        {
+          app_id: 'cubmu',
+          tvs_platform_id: 'standalone',
+          email: 'andre.ndr31@gmail.com',
+          password:
+            'xxeHhVbmwxZFdwcGJrQXpNWHRUVUV4SlZGUkZVbjB4TnpBd05EZzJOVEF5',
+        },
+      ];
+
+      const loginResponse = await this.httpRequest.Request({
+        method: 'POST',
+        url: 'https://www.cubmu.com/api/hmac',
+        data: loginPayload,
+      });
+
+      if (loginResponse.data?.statusCode !== '200')
+        throw new BadRequestException('error get access token');
+
+      const accessToken = loginResponse.data.result.access_token;
+      const platformId = loginResponse.data.result.platform_id;
+      const email = loginResponse.data.result.email;
+
+      const params = new URLSearchParams({
+        email: email,
+        password: 'Unl1dWppbkAzMQ==',
+        deviceId: '1234567890',
+        platformId: platformId,
+      });
+
+      const url = `https://servicebuss.transvision.co.id/tvs/login/external?${params.toString()}`;
+      const transService = await this.httpRequest.Request({
+        method: 'POST',
+        url: url,
+      });
+
+      if (!transService.data?.access_token)
+        throw new BadRequestException('error get session id');
+
+      const sessionId = transService.data.access_token;
+
+      return { sessionId, email };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async encodeToken(req: TokenDto) {
     try {
       const payload = {
-        userId: 'yirose3988_std@cabose.com',
-        sessionId:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjdXJyZW50U2Vzc2lvbklkIjoiYzZmM2I1ZDktM2MxZi00YThkLThlMjctOTZhMzI4MzMwNmQ0IiwiY3VycmVudERldmljZVR5cGUiOiJBIiwiY3VycmVudFBsYXRmb3JtSWQiOiI0MDI4YzY4NTc0NTM3ZmNkMDE3NGFmNjc1NmE5NDI4OCIsInRpbWV6b25lIjoiQXNpYS9KYWthcnRhIiwiYXV0aG9yaXR5IjoiUk9MRV9VU0VSIiwiZXhwIjoxNzAwNDU0ODg5LCJ1c2VySWQiOiI0MDI4NDhlNDhiYjQwNGE5MDE4YmRkZjlhNDhiMDExZCIsImRldmljZUlkIjoiMTIzNDU2Nzg5MCIsImlhdCI6MTcwMDM2ODQ4OSwidXNlcm5hbWUiOiJ5aXJvc2UzOTg4X3N0ZEBjYWJvc2UuY29tIn0.Q2SRRe2Q9vAOcn5oLEm3kssdFEJjV9M6WD0CpIIiz4Y',
+        userId: req.email,
+        sessionId: req.sessionId,
         merchant: 'giitd_transvision',
       };
       const options = {
-        // expiresIn: '24h',
         noTimestamp: true,
       };
       const token = await this.jwtService.signAsync(payload, options);
@@ -75,7 +126,21 @@ export class ChannelService {
 
       return encodedPayload;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getToken() {
+    try {
+      const login = await this.loginCubmu();
+      if (!login.email || !login.sessionId) throw new BadRequestException('login failed');
+
+      const encodedToken = await this.encodeToken(login)
+      const token = encodedToken ?? ''
+
+      return token
+    } catch (error) {
+      throw new BadRequestException(error.message)
     }
   }
 
