@@ -63,4 +63,11 @@ export class ChannelController {
   async encodeToken(@Body() payload: TokenDto) {
     return await this.channelService.encodeToken(payload);
   }
+
+  // Vidio
+  @Version('1')
+  @Post('vidio/token')
+  async getPallyconToken() {
+    return await this.channelService.getPallyconToken();
+  }
 }

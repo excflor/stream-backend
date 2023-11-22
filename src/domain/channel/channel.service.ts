@@ -133,14 +133,40 @@ export class ChannelService {
   async getToken() {
     try {
       const login = await this.loginCubmu();
-      if (!login.email || !login.sessionId) throw new BadRequestException('login failed');
+      if (!login.email || !login.sessionId)
+        throw new BadRequestException('login failed');
 
-      const encodedToken = await this.encodeToken(login)
-      const token = encodedToken ?? ''
+      const encodedToken = await this.encodeToken(login);
+      const token = encodedToken ?? '';
 
-      return token
+      return token;
     } catch (error) {
-      throw new BadRequestException(error.message)
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  // Vidio
+  async getPallyconToken() {
+    try {
+      const header = {
+        origin: 'https://www.vidio.com',
+        'pallycon-customdata-v2':
+          'eyJkcm1fdHlwZSI6IldpZGV2aW5lIiwic2l0ZV9pZCI6Ik1RRFQiLCJ1c2VyX2lkIjoiMTQ3MTk2NTk3IiwiY2lkIjoiNjgyMzBiZGRlNjU0IiwicG9saWN5IjoiNWt4a1MyRytIbEhSb2Fnb1AwYU53ZjFiWXQxMEplWUoyaEJWejc4bGQyZ0JQckFFZTlnQ09vTm5tdUlJYkZ6MHRoSnhZa2hyaFNZeWhIanFLcWxvb3ZnbHVHd2lPTjNxMjdpQXVLU0F6cW96UnFaenppdTM5ZS95MEFYd3lLZnUiLCJ0aW1lc3RhbXAiOiIyMDIzLTExLTIyVDE2OjEzOjQ3WiIsImhhc2giOiJUbHJPQzB1MWMrWTF0TXBVY3BYdzdKK0lxd2JuNkxxMVdWVlRmQ0RKQ0I4PSIsImtleV9yb3RhdGlvbiI6ZmFsc2V9',
+        referer: 'https://www.vidio.com/',
+      };
+
+      const getLicense = await this.httpRequest.Request({
+        headers: header,
+        method: 'POST',
+        url: 'https://license-global.pallycon.com/ri/licenseManager.do',
+      });
+      if (!getLicense) throw new BadRequestException('error get license');
+
+      const license = getLicense.data;
+
+      return license;
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
   }
 
