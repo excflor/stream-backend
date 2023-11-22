@@ -176,6 +176,9 @@ export class ChannelService {
         method: 'POST',
         url: 'https://www.vidio.com/live/205/tokens',
       });
+      if (!getToken.data.token)
+        throw new BadRequestException('token not found');
+
       const token = getToken.data.token;
 
       const master = await this.httpRequest.Request({
