@@ -66,7 +66,7 @@ export class ChannelController {
 
   // Vidio
   @Version('1')
-  @Get('vidio/token')
+  @Post('vidio/token')
   async getPallyconToken() {
     return await this.channelService.getPallyconToken();
   }
