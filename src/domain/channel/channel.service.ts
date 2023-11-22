@@ -188,7 +188,7 @@ export class ChannelService {
 
       return match[0];
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message);
     }
   }
 
