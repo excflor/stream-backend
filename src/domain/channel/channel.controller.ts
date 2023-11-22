@@ -70,4 +70,10 @@ export class ChannelController {
   async getPallyconToken() {
     return await this.channelService.getPallyconToken();
   }
+
+  @Version('1')
+  @Post('vidio/indosiar')
+  async getIndosiar() {
+    return await this.channelService.getIndosiar();
+  }
 }

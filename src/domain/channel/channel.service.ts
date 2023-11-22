@@ -170,6 +170,28 @@ export class ChannelService {
     }
   }
 
+  async getIndosiar() {
+    try {
+      const getToken = await this.httpRequest.Request({
+        method: 'POST',
+        url: 'https://www.vidio.com/live/205/tokens',
+      });
+      const token = getToken.data.token;
+
+      const master = await this.httpRequest.Request({
+        method: 'GET',
+        url: `https://etslive-app.vidio.com/live/205/master.m3u8?${token}`,
+      });
+
+      const regex = /https:\/\/etslive-2-vidio-com\.akamaized\.net\/[^ \n]+/;
+      const match = master.data.match(regex);
+
+      return match[0];
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   update(id: number, updateChannelDto: UpdateChannelDto) {
     return `This action updates a #${id} channel`;
   }
