@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { ConfigService } from '@nestjs/config/dist';
@@ -177,7 +177,9 @@ export class ChannelService {
         url: 'https://www.vidio.com/live/205/tokens',
       });
       if (!getToken.data.token)
-        throw new BadRequestException('token not found');
+        throw new HttpException('error get token', 400, {
+          cause: new Error('error token'),
+        });
 
       const token = getToken.data.token;
 
@@ -191,7 +193,9 @@ export class ChannelService {
 
       return match[0];
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new HttpException('error try catch', 400, {
+        cause: new Error(error.message),
+      });
     }
   }
 
