@@ -193,7 +193,7 @@ export class ChannelService {
 
       return match[0];
     } catch (error) {
-      throw new HttpException('error try catch', 400, {
+      throw new HttpException(error.message, 400, {
         cause: new Error(error.message),
       });
     }
